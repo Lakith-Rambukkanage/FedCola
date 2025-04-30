@@ -127,6 +127,7 @@ class CocoCaptionsCap(Dataset):
         sampled = np.arange(-num_samples, 0)
 
         self.ids = list(operator.itemgetter(*sampled)(self.ids))
+        logger.info('[LOAD] [COCO] Reduced dataset!')
 
 
     def __getitem__(self, index):
@@ -196,8 +197,8 @@ def fetch_coco(args, root, transforms, tokenizer, modality='img+txt'):
 
     # create dataset instance
     raw_train = CocoCaptionsCap(**dataset_args)
-    # elif args.reduce_samples_seg_scale>0:
-    #     raw_train._reduce_samples(int(len(raw_train) * args.reduce_samples_seg_scale))
+    if args.reduce_samples_seg_scale>0:
+        raw_train.reduce_samples(int(len(raw_train) * args.reduce_samples_seg_scale))
     raw_train.task = 'img+txt'
     raw_train.modality = modality
     raw_train.name = 'Coco'

@@ -41,6 +41,16 @@ class Flickr30kCap(Dataset):
 
         return image, caption, index // 5 , index, indice
 
+    def reduce_samples(self, num_samples=1000):
+        # sampled = np.random.choice(len(self), num_samples, replace=False)
+        sampled = np.arange(-num_samples, 0)
+
+        self.images = list(operator.itemgetter(*sampled)(self.images))
+        self.captions = list(operator.itemgetter(*sampled)(self.captions))
+        self.n_images = len(self.images)
+        logger.info('[LOAD] [FLICKR] Reduced dataset!')
+
+    
     def __len__(self):
         return len(self.images)
 
@@ -54,8 +64,8 @@ def fetch_flickr30k(args, root, transforms, tokenizer, modality='img+txt'):
     raw_train = Flickr30kCap(**dataset_args)
     # if args.reduce_samples >0 :
     #     raw_train._reduce_samples(args.reduce_samples)
-    # elif args.reduce_samples_seg_scale>0:
-    #     raw_train._reduce_samples(int(len(raw_train) * args.reduce_samples_seg_scale))
+    if args.reduce_samples_seg_scale>0:
+        raw_train.reduce_samples(int(len(raw_train) * args.reduce_samples_seg_scale))
     raw_train.task = 'img+txt'
     raw_train.modality = modality
     raw_train.name = 'Flickr30k'
