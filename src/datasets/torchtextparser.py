@@ -181,8 +181,8 @@ def fetch_torchtext_dataset(args, dataset_name, root, tokenizer, seq_len, num_em
         logger.info(f'[LOAD] [{dataset_name.upper()}] ...created training & test set!')
 
         # save processed data
-        np.savez_compressed(os.path.join(root, f'tr_{seq_len}.npz'), tr_inputs, tr_targets)
-        np.savez_compressed(os.path.join(root, f'te_{seq_len}.npz'), te_inputs, te_targets)
+        np.savez_compressed(os.path.join(root, f'tr_{seq_len}.npz'), inputs=np.array(tr_inputs, dtype=object), targets=np.array(tr_targets, dtype=object))
+        np.savez_compressed(os.path.join(root, f'te_{seq_len}.npz'), inputs=np.array(te_inputs, dtype=object), targets=np.array(te_targets, dtype=object))
 
     # adjust arguments
     args.num_embeddings = len(vocab) + 1 if tokenizer is None else tokenizer.vocab_size
