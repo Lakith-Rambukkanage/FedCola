@@ -302,7 +302,7 @@ if __name__ == "__main__":
     # # define writer
     # writer = SummaryWriter(log_dir=os.path.join(args.log_path, f'{args.exp_name}_{curr_time}'), filename_suffix=f'_{curr_time}')
 
-    wandb.init(config=args,project='YOUR/PROJECT/NAME', entity='YOUR/ENTITY', name=f"{args.exp_name}{'_aux' if args.with_aux else ''}{'_attn' if args.with_aux and args.aux_attn_only else ''}{'_mlp' if args.with_aux and args.aux_mlp_only else ''}{'_'+str(args.aux_trained) if args.with_aux else ''}_{args.shared_param}_{args.share_scope}{'_comp' if args.compensation else ''}_{args.colearn_param}_{args.warmup_modality}_{args.freeze_modality}_{curr_time}")
+    wandb.init(config=args,project='SRMID4CS', entity='RMIT', name=f"{args.exp_name}{'_aux' if args.with_aux else ''}{'_attn' if args.with_aux and args.aux_attn_only else ''}{'_mlp' if args.with_aux and args.aux_mlp_only else ''}{'_'+str(args.aux_trained) if args.with_aux else ''}_{args.shared_param}_{args.share_scope}{'_comp' if args.compensation else ''}_{args.colearn_param}_{args.warmup_modality}_{args.freeze_modality}_{curr_time}")
     # run main program
     torch.autograd.set_detect_anomaly(True)
     # try:

@@ -2,6 +2,8 @@ import pandas as pd
 import os
 from PIL import Image
 from torch.utils.data import Dataset
+import numpy as np
+import operator
 
 import logging
 logger = logging.getLogger(__name__)
@@ -42,13 +44,15 @@ class Flickr30kCap(Dataset):
         return image, caption, index // 5 , index, indice
 
     def reduce_samples(self, num_samples=1000):
-        # sampled = np.random.choice(len(self), num_samples, replace=False)
-        sampled = np.arange(-num_samples, 0)
+        if num_samples > len(self):
+            raise ValueError(f"num_samples ({num_samples}) cannot be greater than the dataset size ({len(self)}).")
+        
+        sampled = np.random.choice(len(self), num_samples, replace=False)
 
-        self.images = list(operator.itemgetter(*sampled)(self.images))
-        self.captions = list(operator.itemgetter(*sampled)(self.captions))
-        self.n_images = len(self.images)
-        logger.info('[LOAD] [FLICKR] Reduced dataset!')
+        self.images = list(np.array(self.images)[sampled])
+        self.captions = list(np.array(self.captions)[sampled])
+        self.n_images = len(set(self.images))
+        logger.info(f'[LOAD] [FLICKR] Reduced dataset to {num_samples} samples!')
 
     
     def __len__(self):

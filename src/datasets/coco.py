@@ -127,8 +127,7 @@ class CocoCaptionsCap(Dataset):
         sampled = np.arange(-num_samples, 0)
 
         self.ids = list(operator.itemgetter(*sampled)(self.ids))
-        logger.info('[LOAD] [COCO] Reduced dataset!')
-
+        logger.info(f'[LOAD] [COCO] Reduced dataset to {num_samples} samples!')
 
     def __getitem__(self, index):
         """

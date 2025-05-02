@@ -31,6 +31,15 @@ class TextClassificationDataset(torch.utils.data.Dataset):
     def __repr__(self):
         return str(self.identifier)
     
+    def reduce_samples(self, num_samples):
+        if num_samples > len(self):
+            raise ValueError(f"num_samples ({num_samples}) cannot be greater than the dataset size ({len(self)}).")
+        
+        indices = np.random.choice(len(self), num_samples, replace=False)
+        self.inputs = [self.inputs[i] for i in indices]
+        self.targets = [self.targets[i] for i in indices]
+        logger.info(f'[LOAD] [{self.identifier}] Reduced dataset to {num_samples} samples!')
+
 # helper method to fetch dataset from `torchtext.datasets`
 def fetch_torchtext_dataset(args, dataset_name, root, tokenizer, seq_len, num_embeddings):
     URL = {
@@ -181,8 +190,8 @@ def fetch_torchtext_dataset(args, dataset_name, root, tokenizer, seq_len, num_em
         logger.info(f'[LOAD] [{dataset_name.upper()}] ...created training & test set!')
 
         # save processed data
-        np.savez_compressed(os.path.join(root, f'tr_{seq_len}.npz'), inputs=np.array(tr_inputs, dtype=object), targets=np.array(tr_targets, dtype=object))
-        np.savez_compressed(os.path.join(root, f'te_{seq_len}.npz'), inputs=np.array(te_inputs, dtype=object), targets=np.array(te_targets, dtype=object))
+        np.savez_compressed(os.path.join(root, f'tr_{seq_len}.npz'), arr_0=np.array(tr_inputs, dtype=object), arr_1=np.array(tr_targets, dtype=object))
+        np.savez_compressed(os.path.join(root, f'te_{seq_len}.npz'), arr_0=np.array(te_inputs, dtype=object), arr_1=np.array(te_targets, dtype=object))
 
     # adjust arguments
     args.num_embeddings = len(vocab) + 1 if tokenizer is None else tokenizer.vocab_size
@@ -190,6 +199,12 @@ def fetch_torchtext_dataset(args, dataset_name, root, tokenizer, seq_len, num_em
     
     raw_train = TextClassificationDataset(f'[{dataset_name}] CLIENT', tr_inputs, tr_targets)
     raw_test = TextClassificationDataset(f'[{dataset_name}] SERVER', te_inputs, te_targets)
+
+    # Reduce samples if specified in args
+    if args.reduce_samples > 0:
+        raw_train.reduce_samples(args.reduce_samples)
+    if args.reduce_test_samples > 0:
+        raw_test.reduce_samples(args.reduce_test_samples)
 
     raw_train.task = 'cls'
     raw_train.modality = 'txt'

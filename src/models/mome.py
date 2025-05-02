@@ -603,6 +603,7 @@ class ImageEmbedding(Embedding):
         x = torch.cat((cls_tokens, x), dim=1)
         
         if self.pos_embed is not None:
+            self.pos_embed = self.pos_embed.to(x.device)
             x = x + self.pos_embed
         x = self.pos_drop(x)
 
