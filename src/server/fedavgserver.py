@@ -65,8 +65,8 @@ NUM_CLASS = {
     'MedicalAbstracts': 5,
     'Flickr30k': None,
     'Coco': None,
-    'Coco_txt': None,
-    'Coco_img': None,
+    'Coco_txt': 80,
+    'Coco_img': 80,
 }
 
 MODALITY_2_DATASET = {
