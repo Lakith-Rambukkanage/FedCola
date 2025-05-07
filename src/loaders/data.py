@@ -226,8 +226,17 @@ def load_dataset(args, server=False):
     elif args.dataset == 'Coco':
         _check_and_raise_error(args.split_type, 'pre', 'split scenario')
         transforms = [_get_transform(args, train=True), _get_transform(args, train=False)]
-        raw_train, raw_test, args = fetch_coco(args=args, root=args.data_path, transforms=transforms, tokenizer=tokenizer)
+        raw_train, raw_test, args = fetch_coco(args=args, root=args.data_path, transforms=transforms, tokenizer=tokenizer, modality='img+txt')
     
+    elif args.dataset == 'Coco_txt':
+        _check_and_raise_error(args.split_type, 'pre', 'split scenario')
+        transforms = [_get_transform(args, train=True), _get_transform(args, train=False)]
+        raw_train, raw_test, args = fetch_coco(args=args, root=args.data_path, transforms=transforms, tokenizer=tokenizer, modality='txt')
+    
+    elif args.dataset == 'Coco_img':
+        _check_and_raise_error(args.split_type, 'pre', 'split scenario')
+        transforms = [_get_transform(args, train=True), _get_transform(args, train=False)]
+        raw_train, raw_test, args = fetch_coco(args=args, root=args.data_path, transforms=transforms, tokenizer=tokenizer, modality='img')
 
     elif args.dataset in torchvision.datasets.__dict__.keys(): # 3) for downloadable datasets in `torchvision.datasets`...
         _check_and_raise_error(args.split_type, 'pre', 'split scenario')

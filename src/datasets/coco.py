@@ -60,8 +60,9 @@ class CocoCaptionsCap(Dataset):
     def __init__(self, root, annFile, ids=None,
                  extra_annFile=None, extra_ids=None,
                  transform=None, target_transform=None, tokenizer=None, max_length=40,
-                 instance_annFile=None, client=-1):
+                 instance_annFile=None, client=-1, modality='img+txt'):
         self.root = os.path.expanduser(root)
+        self.modality = modality
         if extra_annFile:
             self.coco = COCO()
             with open(annFile, 'r') as fin1, open(extra_annFile, 'r') as fin2:
@@ -134,7 +135,7 @@ class CocoCaptionsCap(Dataset):
         Args:
             index (int): Index
         Returns:
-            tuple: Tuple (image, target). target is a caption for the annotation.
+            tuple: Tuple (image/caption, target). target is a caption/class
         """
         coco = self.coco
         annotation_id = self.ids[index]
@@ -148,12 +149,25 @@ class CocoCaptionsCap(Dataset):
         if self.transform is not None:
             img = self.transform(img)
 
-        if self.tokenizer is not None:
-            target = self.tokenizer(caption, padding='max_length', truncation=True, max_length=self.max_length, return_tensors="pt")['input_ids'][0]
+        if self.modality == 'img+txt':
+            x_input = img
+            if self.tokenizer is not None:
+                target = self.tokenizer(caption, padding='max_length', truncation=True, max_length=self.max_length, return_tensors="pt")['input_ids'][0]
+            else:
+                target = caption
+        elif self.modality == 'img' or self.modality == 'txt':
+            target = self.iid_to_cls[image_id]
+            if self.modality == 'img':
+                x_input = img
+            else:
+                if self.tokenizer is not None:
+                    x_input = self.tokenizer(caption, padding='max_length', truncation=True, max_length=self.max_length, return_tensors="pt")['input_ids'][0]
+                else:
+                    x_input = caption
         else:
-            target = caption
-
-        return img, target, image_id, annotation_id, index
+            raise ValueError(f'Unknown modality {self.modality}')
+        
+        return x_input, target, image_id, annotation_id, index
 
     def __len__(self):
         return len(self.ids)
@@ -192,13 +206,16 @@ def fetch_coco(args, root, transforms, tokenizer, modality='img+txt'):
     ann_path = os.path.join(root,'annotations','captions_train2014.json')
     ids = np.load(os.path.join(root, 'coco_train_ids.npy'))[:args.reduce_samples]
     # configure arguments for dataset
-    dataset_args = {'root': img_path, 'annFile': ann_path,'transform': transforms[0], "tokenizer": tokenizer, "max_length": args.seq_len, 'ids': ids}
+    dataset_args = {'root': img_path, 'annFile': ann_path,'transform': transforms[0], "tokenizer": tokenizer, "max_length": args.seq_len, 'ids': ids, 'modality': modality}
 
     # create dataset instance
     raw_train = CocoCaptionsCap(**dataset_args)
     if args.reduce_samples_seg_scale>0:
         raw_train.reduce_samples(int(len(raw_train) * args.reduce_samples_seg_scale))
-    raw_train.task = 'img+txt'
+    if modality == 'img' or modality == 'txt':
+        raw_train.task = 'cls'
+    else:
+        raw_train.task = 'img+txt'
     raw_train.modality = modality
     raw_train.name = 'Coco'
 
@@ -213,7 +230,10 @@ def fetch_coco(args, root, transforms, tokenizer, modality='img+txt'):
 
     raw_test = CocoCaptionsCap(**test_args)
 
-    raw_test.task = 'img+txt'
+    if modality == 'img' or modality == 'txt':
+        raw_test.task = 'cls'
+    else:
+        raw_test.task = 'img+txt'
     raw_test.modality = modality
     raw_test.name = 'Coco'
     
