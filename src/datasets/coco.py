@@ -217,7 +217,12 @@ def fetch_coco(args, root, transforms, tokenizer, modality='img+txt'):
     else:
         raw_train.task = 'img+txt'
     raw_train.modality = modality
-    raw_train.name = 'Coco'
+    if modality == 'img':
+        raw_train.name = 'Coco_img'
+    elif modality == 'txt':
+        raw_train.name = 'Coco_txt'
+    else:
+        raw_train.name = 'Coco'
 
 
     test_args = dataset_args.copy()
@@ -235,7 +240,13 @@ def fetch_coco(args, root, transforms, tokenizer, modality='img+txt'):
     else:
         raw_test.task = 'img+txt'
     raw_test.modality = modality
-    raw_test.name = 'Coco'
+
+    if modality == 'img':
+        raw_test.name = 'Coco_img'
+    elif modality == 'txt':
+        raw_test.name = 'Coco_txt'
+    else:
+        raw_test.name = 'Coco'
     
     logger.info('[LOAD] [COCO] ...fetched dataset!')
 

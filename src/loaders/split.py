@@ -30,8 +30,8 @@ def simulate_split(args, dataset):
         return split_map
     
     # non-IID split by sample unbalancedness
-    if args.split_type == 'unbalanced' or (args.dataset in ['Flickr30k', 'Coco'] and args.split_type != 'iid'): 
-        if args.dataset in ['Flickr30k', 'Coco']:
+    if args.split_type == 'unbalanced' or (args.dataset in ['Flickr30k', 'Coco', 'Coco_txt', 'Coco_img'] and args.split_type != 'iid'): 
+        if args.dataset in ['Flickr30k', 'Coco', 'Coco_txt', 'Coco_img']:
             shuffled_indices = np.random.permutation(len(dataset) // 5)
             
             # split indices by number of clients

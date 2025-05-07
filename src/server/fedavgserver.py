@@ -39,6 +39,8 @@ DATASET_2_TASK = {
     'MedicalAbstracts': 'cls',
     'Flickr30k': 'rtv',
     'Coco': 'rtv',
+    'Coco_txt': 'cls',
+    'Coco_img': 'cls',
 }
 
 DATASET_2_MODALITY = {
@@ -50,6 +52,8 @@ DATASET_2_MODALITY = {
     'MedicalAbstracts': 'txt',
     'Flickr30k': 'img+txt',
     'Coco': 'img+txt',
+    'Coco_txt': 'txt',
+    'Coco_img': 'img',
 }
 
 # dataset version
@@ -61,6 +65,8 @@ NUM_CLASS = {
     'MedicalAbstracts': 5,
     'Flickr30k': None,
     'Coco': None,
+    'Coco_txt': None,
+    'Coco_img': None,
 }
 
 MODALITY_2_DATASET = {
