@@ -93,6 +93,7 @@ class CocoCaptionsCap(Dataset):
 
         iid_to_cls = {}
         if instance_annFile:
+            iid_to_cls_tmp = {}
             for ins_file in glob(instance_annFile + '/instances_*'):
                 with open(ins_file) as fin:
                     instance_ann = json.load(fin)
@@ -113,11 +114,12 @@ class CocoCaptionsCap(Dataset):
                         new_iid_to_cls[k] = idx
                         seen_classes[v] = idx
                         idx += 1
-                iid_to_cls = new_iid_to_cls
+                iid_to_cls_tmp.update(new_iid_to_cls)
 
                 if self.all_image_ids - set(iid_to_cls.keys()):
                     # print(f'Found mismatched! {self.all_image_ids - set(iid_to_cls.keys())}')
                     print(f'Found mismatched! {len(self.all_image_ids - set(iid_to_cls.keys()))}')
+            iid_to_cls = iid_to_cls_tmp
 
         self.iid_to_cls = iid_to_cls
         self.n_images = len(self.all_image_ids)
@@ -204,9 +206,10 @@ def fetch_coco(args, root, transforms, tokenizer, modality='img+txt'):
     
     img_path = os.path.join(root, 'all_images')
     ann_path = os.path.join(root,'annotations','captions_train2014.json')
+    instance_annFile_path = os.path.join(root,'annotations')
     ids = np.load(os.path.join(root, 'coco_train_ids.npy'))[:args.reduce_samples]
     # configure arguments for dataset
-    dataset_args = {'root': img_path, 'annFile': ann_path,'transform': transforms[0], "tokenizer": tokenizer, "max_length": args.seq_len, 'ids': ids, 'modality': modality}
+    dataset_args = {'root': img_path, 'annFile': ann_path,'transform': transforms[0], "tokenizer": tokenizer, "max_length": args.seq_len, 'ids': ids, 'modality': modality, 'instance_annFile': instance_annFile_path}
 
     # create dataset instance
     raw_train = CocoCaptionsCap(**dataset_args)
