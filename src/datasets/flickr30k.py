@@ -68,8 +68,8 @@ def fetch_flickr30k(args, root, transforms, tokenizer, modality='img+txt'):
     raw_train = Flickr30kCap(**dataset_args)
     # if args.reduce_samples >0 :
     #     raw_train._reduce_samples(args.reduce_samples)
-    if args.reduce_samples_seg_scale>0:
-        raw_train.reduce_samples(int(len(raw_train) * args.reduce_samples_seg_scale))
+    if args.reduce_samples_seg_scale > 0:
+        raw_train.reduce_samples(num_samples=int(len(raw_train) * args.reduce_samples_seg_scale))
     raw_train.task = 'img+txt'
     raw_train.modality = modality
     raw_train.name = 'Flickr30k'
