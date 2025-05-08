@@ -100,11 +100,12 @@ class CocoCaptionsCap(Dataset):
                     instance_ann = json.load(fin)
                 for ann in instance_ann['annotations']:
                     image_id = int(ann['image_id'])
-                    code = iid_to_cls.get(image_id, [0] * 90)
+                    code = iid_to_cls.get(image_id, [0] * 80)
                     code[int(ann['category_id']) - 1] = 1
                     iid_to_cls[image_id] = code
 
                 seen_classes = {}
+                seen_classes['0' * 80] = 0
                 new_iid_to_cls = {}
                 idx = 0
                 for k, v in iid_to_cls.items():
@@ -166,7 +167,7 @@ class CocoCaptionsCap(Dataset):
             # Handle missing image_id in iid_to_cls
             if image_id not in self.iid_to_cls:
                 logger.warning(f"Image ID {image_id} not found in iid_to_cls. Assigning default target.")
-                target = [0] * 90  # Default target (adjust as needed)
+                target = 0  # Default target
             else:
                 target = self.iid_to_cls[image_id]
             if self.modality == 'img':
