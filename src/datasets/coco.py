@@ -100,12 +100,12 @@ class CocoCaptionsCap(Dataset):
                     instance_ann = json.load(fin)
                 for ann in instance_ann['annotations']:
                     image_id = int(ann['image_id'])
-                    code = iid_to_cls.get(image_id, [0] * 80)
+                    code = iid_to_cls.get(image_id, [0] * 90)
                     code[int(ann['category_id']) - 1] = 1
                     iid_to_cls[image_id] = code
 
                 seen_classes = {}
-                seen_classes['0' * 80] = 0
+                seen_classes['0' * 90] = 0
                 new_iid_to_cls = {}
                 idx = 0
                 for k, v in iid_to_cls.items():
