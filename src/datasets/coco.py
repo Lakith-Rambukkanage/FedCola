@@ -60,9 +60,10 @@ class CocoCaptionsCap(Dataset):
     def __init__(self, root, annFile, ids=None,
                  extra_annFile=None, extra_ids=None,
                  transform=None, target_transform=None, tokenizer=None, max_length=40,
-                 instance_annFile=None, client=-1, modality='img+txt'):
+                 instance_annFile=None, client=-1, modality='img+txt', name='Coco'):
         self.root = os.path.expanduser(root)
         self.modality = modality
+        self.name = name
         if extra_annFile:
             self.coco = COCO()
             with open(annFile, 'r') as fin1, open(extra_annFile, 'r') as fin2:
@@ -121,7 +122,7 @@ class CocoCaptionsCap(Dataset):
                     print(f'Found mismatched! {len(self.all_image_ids - set(iid_to_cls.keys()))}')
             iid_to_cls = iid_to_cls_tmp
 
-            print(f'Derived COCO Classes Count : {len(seen_classes)}')
+            print(f'Derived {self.name} Classes Count : {len(seen_classes)}')
 
         self.iid_to_cls = iid_to_cls
         self.n_images = len(self.all_image_ids)
@@ -210,8 +211,15 @@ def fetch_coco(args, root, transforms, tokenizer, modality='img+txt'):
     ann_path = os.path.join(root,'annotations','captions_train2014.json')
     instance_annFile_path = os.path.join(root,'annotations')
     ids = np.load(os.path.join(root, 'coco_train_ids.npy'))[:args.reduce_samples]
+
+    if modality == 'img':
+        name = 'Coco_img'
+    elif modality == 'txt':
+        name = 'Coco_txt'
+    else:
+        name = 'Coco'
     # configure arguments for dataset
-    dataset_args = {'root': img_path, 'annFile': ann_path,'transform': transforms[0], "tokenizer": tokenizer, "max_length": args.seq_len, 'ids': ids, 'modality': modality, 'instance_annFile': instance_annFile_path}
+    dataset_args = {'root': img_path, 'annFile': ann_path,'transform': transforms[0], "tokenizer": tokenizer, "max_length": args.seq_len, 'ids': ids, 'modality': modality, 'instance_annFile': instance_annFile_path, 'name': name}
 
     # create dataset instance
     raw_train = CocoCaptionsCap(**dataset_args)
@@ -222,12 +230,6 @@ def fetch_coco(args, root, transforms, tokenizer, modality='img+txt'):
     else:
         raw_train.task = 'img+txt'
     raw_train.modality = modality
-    if modality == 'img':
-        raw_train.name = 'Coco_img'
-    elif modality == 'txt':
-        raw_train.name = 'Coco_txt'
-    else:
-        raw_train.name = 'Coco'
 
 
     test_args = dataset_args.copy()
@@ -245,13 +247,6 @@ def fetch_coco(args, root, transforms, tokenizer, modality='img+txt'):
     else:
         raw_test.task = 'img+txt'
     raw_test.modality = modality
-
-    if modality == 'img':
-        raw_test.name = 'Coco_img'
-    elif modality == 'txt':
-        raw_test.name = 'Coco_txt'
-    else:
-        raw_test.name = 'Coco'
     
     logger.info('[LOAD] [COCO] ...fetched dataset!')
 
