@@ -91,6 +91,7 @@ class CocoCaptionsCap(Dataset):
         self.max_length = max_length
 
         self.all_image_ids = set([self.coco.loadAnns(annotation_id)[0]['image_id'] for annotation_id in self.ids])
+        logger.info(f'[LOAD] [{self.name}] Found {len(self.all_image_ids)} ALL image ids from ANN!')
 
         iid_to_cls = {}
         if instance_annFile and modality!='img+txt':
