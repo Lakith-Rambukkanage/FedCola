@@ -126,6 +126,8 @@ class CocoCaptionsCap(Dataset):
 
         self.iid_to_cls = iid_to_cls
         self.n_images = len(self.all_image_ids)
+        logger.info(f'[LOAD] [{self.name}] Found {self.n_images} images!')
+        logger.info(f'[LOAD] [{self.name}] Found {len(self.iid_to_cls)} image id to classes!')
     
     def reduce_samples(self, num_samples=1000):
 
