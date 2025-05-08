@@ -92,7 +92,7 @@ class CocoCaptionsCap(Dataset):
         self.all_image_ids = set([self.coco.loadAnns(annotation_id)[0]['image_id'] for annotation_id in self.ids])
 
         iid_to_cls = {}
-        if instance_annFile:
+        if instance_annFile and modality!='img+txt':
             iid_to_cls_tmp = {}
             for ins_file in glob(instance_annFile + '/instances_*'):
                 with open(ins_file) as fin:
@@ -121,7 +121,8 @@ class CocoCaptionsCap(Dataset):
                     print(f'Found mismatched! {len(self.all_image_ids - set(iid_to_cls.keys()))}')
             iid_to_cls = iid_to_cls_tmp
 
-        print(f'Derived COCO Classes Count : {len(seen_classes)}')
+            print(f'Derived COCO Classes Count : {len(seen_classes)}')
+
         self.iid_to_cls = iid_to_cls
         self.n_images = len(self.all_image_ids)
     
