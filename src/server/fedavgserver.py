@@ -65,8 +65,8 @@ NUM_CLASS = {
     'MedicalAbstracts': 5,
     'Flickr30k': None,
     'Coco': None,
-    'Coco_txt': 80,
-    'Coco_img': 80,
+    'Coco_txt': 25499,
+    'Coco_img': 25499,
 }
 
 MODALITY_2_DATASET = {
@@ -721,6 +721,8 @@ class FedavgServer(BaseServer):
                 self.writer.log(res_dict, self.round)
 
             else:
+                if dataset=='Coco_txt' or dataset=='Coco_img':
+                    continue
                 self.global_model = self.global_models[dataset]
                 mm = MetricManager(self.args.eval_metrics)
                 self.global_model.eval()

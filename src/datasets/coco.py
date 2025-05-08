@@ -121,6 +121,7 @@ class CocoCaptionsCap(Dataset):
                     print(f'Found mismatched! {len(self.all_image_ids - set(iid_to_cls.keys()))}')
             iid_to_cls = iid_to_cls_tmp
 
+        print(f'Derived COCO Classes Count : {len(seen_classes)}')
         self.iid_to_cls = iid_to_cls
         self.n_images = len(self.all_image_ids)
     

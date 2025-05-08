@@ -79,7 +79,7 @@ class FedavgClient(BaseClient):
                 optimizer.zero_grad()
 
                 if self.modality == 'img':
-                    if self.train_loader.name == 'Coco_img':
+                    if self.dataset == 'Coco_img':
                         inputs, targets, _, _, _ = batch
                     else:
                         inputs, targets = batch
@@ -87,11 +87,10 @@ class FedavgClient(BaseClient):
                     outputs = self.model([inputs, None])[0]
                     loss = self.criterion()(outputs.to(targets.device), targets)
                 elif self.modality == 'txt':
-                    if self.train_loader.name == 'Coco_txt':
+                    if self.dataset == 'Coco_txt':
                         inputs, targets, _, _, _ = batch
                     else:
                         inputs, targets = batch
-                    inputs, targets = batch
                     inputs, targets = inputs.to(self.device), targets.to(self.device)
                     outputs = self.model([None, inputs])[1]
                     loss = self.criterion()(outputs.to(targets.device), targets)
