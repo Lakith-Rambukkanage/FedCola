@@ -163,7 +163,12 @@ class CocoCaptionsCap(Dataset):
             else:
                 target = caption
         elif self.modality == 'img' or self.modality == 'txt':
-            target = self.iid_to_cls[image_id]
+            # Handle missing image_id in iid_to_cls
+            if image_id not in self.iid_to_cls:
+                logger.warning(f"Image ID {image_id} not found in iid_to_cls. Assigning default target.")
+                target = [0] * 90  # Default target (adjust as needed)
+            else:
+                target = self.iid_to_cls[image_id]
             if self.modality == 'img':
                 x_input = img
             else:
