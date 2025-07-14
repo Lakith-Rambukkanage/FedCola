@@ -529,6 +529,10 @@ class FedavgServer(BaseServer):
             if client.model is None or require_model:
                 client.download(self.global_models)
             eval_result = client.evaluate() 
+            if self.args.save_client_models:
+                logger.info(f'[{self.args.algorithm.upper()}] [Round: {str(self.round).zfill(4)}] Save model of client {client.id} at epoch {self.round + 1}!')
+                os.makedirs(os.path.join(self.args.save_model_dir, "epoch_" + str(self.round + 1)), exist_ok=True)
+                torch.save(client.model.cpu().state_dict(), os.path.join(self.args.save_model_dir, f'{self.args.exp_name}_{self.args.curr_time}',"epoch_"+str(self.round+1), f'model_epoch_{'img_txt' if client.modality == 'img+txt' else client.modality}_{self.round+1}.pt'))
             if not retain_model:
                 client.model = None
             return {client.id: len(client.test_set)}, {client.id: eval_result}

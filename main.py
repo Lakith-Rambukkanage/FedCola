@@ -286,6 +286,7 @@ if __name__ == "__main__":
     # make path for saving losses & metrics & models
     curr_time = time.strftime("%y%m%d_%H%M%S", time.localtime())
     args.result_path = os.path.join(args.result_path, f'{args.exp_name}_{curr_time}')
+    args.curr_time = curr_time
     if not os.path.exists(args.result_path):
         os.makedirs(args.result_path)
         
