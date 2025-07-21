@@ -18,7 +18,7 @@ checkpoints
 *.npy
 result
 features
-
+results
 # test files
 misc
 test.ipynb
