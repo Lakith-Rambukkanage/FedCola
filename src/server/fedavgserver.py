@@ -502,6 +502,21 @@ class FedavgServer(BaseServer):
                         self._freeze_shared_params(client)
                     elif self.round > (self.args.freeze_rounds + self.args.warmup_rounds):
                         self._unfreeze_params(client)
+            if self.args.save_client_models:
+                logger.info(f'[{self.args.algorithm.upper()}] [Round: {str(self.round).zfill(4)}] Save model of client {client.id} at epoch {self.round}!')
+                os.makedirs(os.path.join(self.args.save_model_dir, f'{self.args.exp_name}_{self.args.curr_time}', "epoch_" + str(self.round)), exist_ok=True)
+                modality_str = 'img_txt' if client.modality == 'img+txt' else client.modality
+                model_filename = f'model_epoch_{modality_str}_{self.round}.pt'
+                torch.save(
+                    client.model.cpu().state_dict(),
+                    os.path.join(
+                        self.args.save_model_dir,
+                        f'{self.args.exp_name}_{self.args.curr_time}',
+                        "epoch_" + str(self.round),
+                        model_filename
+                    )
+                )
+                logger.info(f'====> Saved to : {self.args.save_model_dir}'+f'{self.args.exp_name}_{self.args.curr_time}')
             update_result = client.update()
             if not retain_model:
                 client.model = None
@@ -520,6 +535,21 @@ class FedavgServer(BaseServer):
                         self._freeze_shared_params(client)
                     elif self.round > (self.args.freeze_rounds + self.args.warmup_rounds):
                         self._unfreeze_params(client)
+            if self.args.save_client_models:
+                logger.info(f'[{self.args.algorithm.upper()}] [Round: {str(self.round).zfill(4)}] Save model of client {client.id} at epoch {self.round}!')
+                os.makedirs(os.path.join(self.args.save_model_dir, f'{self.args.exp_name}_{self.args.curr_time}', "epoch_" + str(self.round)), exist_ok=True)
+                modality_str = 'img_txt' if client.modality == 'img+txt' else client.modality
+                model_filename = f'model_epoch_{modality_str}_{self.round}.pt'
+                torch.save(
+                    client.model.cpu().state_dict(),
+                    os.path.join(
+                        self.args.save_model_dir,
+                        f'{self.args.exp_name}_{self.args.curr_time}',
+                        "epoch_" + str(self.round),
+                        model_filename
+                    )
+                )
+                logger.info(f'====> Saved to : {self.args.save_model_dir}'+f'{self.args.exp_name}_{self.args.curr_time}')
             update_result = client.update()
             if not retain_model:
                 client.model = None
@@ -530,9 +560,20 @@ class FedavgServer(BaseServer):
                 client.download(self.global_models)
             eval_result = client.evaluate() 
             if self.args.save_client_models:
-                logger.info(f'[{self.args.algorithm.upper()}] [Round: {str(self.round).zfill(4)}] Save model of client {client.id} at epoch {self.round + 1}!')
-                os.makedirs(os.path.join(self.args.save_model_dir, "epoch_" + str(self.round + 1)), exist_ok=True)
-                torch.save(client.model.cpu().state_dict(), os.path.join(self.args.save_model_dir, f'{self.args.exp_name}_{self.args.curr_time}',"epoch_"+str(self.round+1), f'model_epoch_{'img_txt' if client.modality == 'img+txt' else client.modality}_{self.round+1}.pt'))
+                logger.info(f'[{self.args.algorithm.upper()}] [Round: {str(self.round).zfill(4)}] Save model of client {client.id} at epoch {self.round}!')
+                os.makedirs(os.path.join(self.args.save_model_dir, f'{self.args.exp_name}_{self.args.curr_time}', "epoch_" + str(self.round)), exist_ok=True)
+                modality_str = 'img_txt' if client.modality == 'img+txt' else client.modality
+                model_filename = f'model_epoch_{modality_str}_{self.round}.pt'
+                torch.save(
+                    client.model.cpu().state_dict(),
+                    os.path.join(
+                        self.args.save_model_dir,
+                        f'{self.args.exp_name}_{self.args.curr_time}',
+                        "epoch_" + str(self.round),
+                        model_filename
+                    )
+                )
+                logger.info(f'====> Saved to : {self.args.save_model_dir}'+f'{self.args.exp_name}_{self.args.curr_time}')
             if not retain_model:
                 client.model = None
             return {client.id: len(client.test_set)}, {client.id: eval_result}
