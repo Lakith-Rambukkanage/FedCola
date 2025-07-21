@@ -277,6 +277,10 @@ if __name__ == "__main__":
     parser.add_argument('--criterion', help='objective function (NOTE: should be a submodule of `torch.nn`, thus case-sensitive)', type=str, required=True)
     parser.add_argument('--mu', help='constant for proximity regularization term (valid only if the algorithm is `fedprox`)', type=float, choices=[Range(0., 1e6)], default=0.01)
 
+    # model saving arguments
+    parser.add_argument('--save_client_models', help='save client models after training (if passed)', default=False, action='store_true')
+    parser.add_argument('--save_model_dir', help='directory to save models', type=str, default='./saved_models')
+
     # parse arguments
     args = parser.parse_args()
     args.out_modality_scales = eval(args.out_modality_scales)
