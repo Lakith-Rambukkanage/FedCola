@@ -503,16 +503,16 @@ class FedavgServer(BaseServer):
                     elif self.round > (self.args.freeze_rounds + self.args.warmup_rounds):
                         self._unfreeze_params(client)
             if self.args.save_client_models:
-                logger.info(f'[{self.args.algorithm.upper()}] [Round: {str(self.round).zfill(4)}] Save model of client {client.id} at epoch {self.round}!')
-                os.makedirs(os.path.join(self.args.save_model_dir, f'{self.args.exp_name}_{self.args.curr_time}', "epoch_" + str(self.round)), exist_ok=True)
+                logger.info(f'[{self.args.algorithm.upper()}] [Round: {str(self.round-1).zfill(4)}] Save model of client {client.id} at epoch {self.round}!')
+                os.makedirs(os.path.join(self.args.save_model_dir, f'{self.args.exp_name}_{self.args.curr_time}', "epoch_" + str(self.round-1)), exist_ok=True)
                 modality_str = 'img_txt' if client.modality == 'img+txt' else client.modality
-                model_filename = f'model_epoch_{modality_str}_{self.round}.pt'
+                model_filename = f'model_epoch_{modality_str}_{self.round-1}.pt'
                 torch.save(
                     client.model.cpu().state_dict(),
                     os.path.join(
                         self.args.save_model_dir,
                         f'{self.args.exp_name}_{self.args.curr_time}',
-                        "epoch_" + str(self.round),
+                        "epoch_" + str(self.round-1),
                         model_filename
                     )
                 )
@@ -536,16 +536,16 @@ class FedavgServer(BaseServer):
                     elif self.round > (self.args.freeze_rounds + self.args.warmup_rounds):
                         self._unfreeze_params(client)
             if self.args.save_client_models:
-                logger.info(f'[{self.args.algorithm.upper()}] [Round: {str(self.round).zfill(4)}] Save model of client {client.id} at epoch {self.round}!')
-                os.makedirs(os.path.join(self.args.save_model_dir, f'{self.args.exp_name}_{self.args.curr_time}', "epoch_" + str(self.round)), exist_ok=True)
+                logger.info(f'[{self.args.algorithm.upper()}] [Round: {str(self.round-1).zfill(4)}] Save model of client {client.id} at epoch {self.round-1}!')
+                os.makedirs(os.path.join(self.args.save_model_dir, f'{self.args.exp_name}_{self.args.curr_time}', "epoch_" + str(self.round-1)), exist_ok=True)
                 modality_str = 'img_txt' if client.modality == 'img+txt' else client.modality
-                model_filename = f'model_epoch_{modality_str}_{self.round}.pt'
+                model_filename = f'model_epoch_{modality_str}_{self.round-1}.pt'
                 torch.save(
                     client.model.cpu().state_dict(),
                     os.path.join(
                         self.args.save_model_dir,
                         f'{self.args.exp_name}_{self.args.curr_time}',
-                        "epoch_" + str(self.round),
+                        "epoch_" + str(self.round-1),
                         model_filename
                     )
                 )
@@ -560,16 +560,16 @@ class FedavgServer(BaseServer):
                 client.download(self.global_models)
             eval_result = client.evaluate() 
             if self.args.save_client_models:
-                logger.info(f'[{self.args.algorithm.upper()}] [Round: {str(self.round).zfill(4)}] Save model of client {client.id} at epoch {self.round}!')
-                os.makedirs(os.path.join(self.args.save_model_dir, f'{self.args.exp_name}_{self.args.curr_time}', "epoch_" + str(self.round)), exist_ok=True)
+                logger.info(f'[{self.args.algorithm.upper()}] [Round: {str(self.round-1).zfill(4)}] Save model of client {client.id} at epoch {self.round-1}!')
+                os.makedirs(os.path.join(self.args.save_model_dir, f'{self.args.exp_name}_{self.args.curr_time}', "epoch_" + str(self.round-1)), exist_ok=True)
                 modality_str = 'img_txt' if client.modality == 'img+txt' else client.modality
-                model_filename = f'model_epoch_{modality_str}_{self.round}.pt'
+                model_filename = f'model_epoch_{modality_str}_{self.round-1}.pt'
                 torch.save(
                     client.model.cpu().state_dict(),
                     os.path.join(
                         self.args.save_model_dir,
                         f'{self.args.exp_name}_{self.args.curr_time}',
-                        "epoch_" + str(self.round),
+                        "epoch_" + str(self.round-1),
                         model_filename
                     )
                 )
